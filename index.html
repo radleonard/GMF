@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Jadwal Shift Tim D</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold text-slate-800 text-center mb-6">🗓️ Cek Shift Tim D</h2>
+        
+        <div class="space-y-4">
+            <!-- Input Tanggal -->
+            <div>
+                <label for="target-date" class="block text-sm font-semibold text-slate-600 mb-2">Pilih Tanggal:</label>
+                <input type="date" id="target-date" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+            </div>
+
+            <!-- Tombol Cek -->
+            <button onclick="cekShift()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-xl transition duration-200 shadow-md cursor-pointer text-center">
+                Periksa Jadwal
+            </button>
+
+            <hr class="border-slate-200 my-4">
+
+            <!-- Hasil Tampilan -->
+            <div id="hasil-container" class="hidden p-4 rounded-xl text-center transition-all duration-300">
+                <p class="text-sm text-slate-500 font-medium" id="tgl-terpilih"></p>
+                <h3 class="text-2xl font-bold mt-1" id="nama-shift"></h3>
+                <p class="text-md font-semibold mt-1" id="kode-shift"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cekShift() {
+            const inputDateVal = document.getElementById('target-date').value;
+            if (!inputDateVal) {
+                alert('Silakan pilih tanggal terlebih dahulu!');
+                return;
+            }
+
+            // 1. Tentukan Anchor Date (20 Maret 2026 sebagai hari pertama Pagi / Indeks 0)
+            // Menggunakan format YYYY-MM-DD agar aman dari timezone offset
+            const anchorDate = new Date('2026-03-20');
+            const targetDate = new Date(inputDateVal);
+
+            // Set waktu ke jam 00:00:00 untuk presisi perhitungan hari
+            anchorDate.setHours(0,0,0,0);
+            targetDate.setHours(0,0,0,0);
+
+            // 2. Hitung selisih hari
+            const diffTime = targetDate - anchorDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            // 3. Pola perulangan 8 hari
+            // Menggunakan rumus modulus yang aman untuk nilai negatif (jika cek tanggal sebelum 20 Mar)
+            const shiftIndex = ((diffDays % 8) + 8) % 8;
+
+            // 4. Mapping indeks ke jenis shift
+            let shiftName = "";
+            let shiftCode = "";
+            let bgClass = "";
+            let textClass = "";
+
+            if (shiftIndex === 0 || shiftIndex === 1) {
+                shiftName = "PAGI";
+                shiftCode = "PD06";
+                bgClass = "bg-amber-50 border border-amber-200";
+                textClass = "text-amber-600";
+            } else if (shiftIndex === 2 || shiftIndex === 3) {
+                shiftName = "SIANG";
+                shiftCode = "S805";
+                bgClass = "bg-blue-50 border border-blue-200";
+                textClass = "text-blue-600";
+            } else if (shiftIndex === 4 || shiftIndex === 5) {
+                shiftName = "MALAM";
+                shiftCode = "M707";
+                bgClass = "bg-indigo-950 border border-indigo-900";
+                textClass = "text-indigo-200";
+            } else if (shiftIndex === 6 || shiftIndex === 7) {
+                shiftName = "OFF / LIBUR";
+                shiftCode = "FREE";
+                bgClass = "bg-emerald-50 border border-emerald-200";
+                textClass = "text-emerald-600";
+            }
+
+            // 5. Format tampilan tanggal Indonesia
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = targetDate.toLocaleDateString('id-ID', options);
+
+            // 6. Update DOM UI
+            const container = document.getElementById('hasil-container');
+            const tglTerpilih = document.getElementById('tgl-terpilih');
+            const namaShift = document.getElementById('nama-shift');
+            const kodeShift = document.getElementById('kode-shift');
+
+            container.className = `p-5 rounded-xl text-center transition-all duration-300 ${bgClass}`;
+            
+            // Khusus warna teks tanggal atas jika shift malam agar terbaca
+            tglTerpilih.className = shiftName === "MALAM" ? "text-slate-400 text-sm font-medium" : "text-slate-500 text-sm font-medium";
+            tglTerpilih.innerText = formattedDate;
+            
+            namaShift.className = `text-2xl font-black mt-1 ${textClass}`;
+            namaShift.innerText = shiftName;
+            
+            kodeShift.className = shiftName === "MALAM" ? "text-slate-300 text-md font-semibold mt-1" : "text-slate-700 text-md font-semibold mt-1";
+            kodeShift.innerText = `Kode: ${shiftCode}`;
+
+            container.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
