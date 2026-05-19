@@ -66,18 +66,33 @@
             let bgClass = "";
             let textClass = "";
 
-            if (shiftIndex === 0 || shiftIndex === 1) {
-                shiftName = "PAGI";
+            if (shiftIndex === 0) {
+                shiftName = "PAGI-1";
                 shiftCode = "PD06";
                 bgClass = "bg-amber-50 border border-amber-200";
                 textClass = "text-amber-600";
-            } else if (shiftIndex === 2 || shiftIndex === 3) {
-                shiftName = "SIANG";
+            } else if (shiftIndex === 1) {
+                shiftName = "PAGI-2";
+                shiftCode = "PD06";
+                bgClass = "bg-amber-50 border border-amber-200";
+                textClass = "text-amber-600";
+            } else if (shiftIndex === 2) {
+                shiftName = "SIANG-1";
                 shiftCode = "S805";
                 bgClass = "bg-blue-50 border border-blue-200";
                 textClass = "text-blue-600";
-            } else if (shiftIndex === 4 || shiftIndex === 5) {
-                shiftName = "MALAM";
+            } else if (shiftIndex === 3) {
+                shiftName = "SIANG-2";
+                shiftCode = "S805";
+                bgClass = "bg-blue-50 border border-blue-200";
+                textClass = "text-blue-600";
+            } else if (shiftIndex === 4) {
+                shiftName = "MALAM-1";
+                shiftCode = "M707";
+                bgClass = "bg-indigo-950 border border-indigo-900";
+                textClass = "text-indigo-200";
+            } else if (shiftIndex === 5) {
+                shiftName = "MALAM-2";
                 shiftCode = "M707";
                 bgClass = "bg-indigo-950 border border-indigo-900";
                 textClass = "text-indigo-200";
